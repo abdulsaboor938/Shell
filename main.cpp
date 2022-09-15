@@ -27,6 +27,13 @@ int main()
 
         // Tokenizing input string based on spaces
         cout << "You entered: " << instr << endl;
+
+        /*
+        Further Steps:
+        * First major task is to properly tokenize and learn to pass params in a separate program
+        - create a child process and wait for child to complete
+        - call the exec function eith all parameters
+        */
     }
 END:;
 }
