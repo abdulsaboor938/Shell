@@ -40,7 +40,6 @@ int main()
         }
 
         // Tokenizing input string based on spaces
-        cout << "You entered: " << instr << endl;
 
         /*
         Further Steps:
@@ -59,8 +58,12 @@ int main()
         else if (retVal == 0)
         {
             // child process
-            // using a vector to store the params and then converting to char
-            execl("/bin", instr);
+            cout << "child process" << endl;
+            instr.append("\n");
+            char arr[instr.length()];
+            strcpy(arr, instr.c_str());
+            char *temp = &arr[0];
+            execl("/bin", temp);
         }
         else
         {
