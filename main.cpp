@@ -11,6 +11,7 @@ BDS-5A
 #include <sys/wait.h>
 #include <string.h>
 #include <vector>
+#include <sstream>
 using namespace std;
 
 // vector<string> tokenize(string arg)
@@ -30,7 +31,7 @@ int main()
 
     while (true)
     {
-        string instr;                                   // this is a string to take input from user
+        string instr, temp;                             // this is a string to take input from user
         cout << "(base) 20L-1113@Assignment1 Shell % "; // prompt for terminal input
         getline(cin, instr);                            // getting input from command line
 
@@ -58,12 +59,32 @@ int main()
         else if (retVal == 0)
         {
             // child process
+
             cout << "child process" << endl;
-            instr.append("\n");
-            char arr[instr.length()];
-            strcpy(arr, instr.c_str());
-            char *temp = &arr[0];
-            execl("/bin", temp);
+
+            // instr.append("\n");
+            // char arr[instr.length()];
+            // strcpy(arr, instr.c_str());
+            // char *temp = &arr[0];
+            // execl("/bin", temp);
+
+            vector<string> tokens;
+            stringstream X(instr);
+            while (getline(X, temp, ' '))
+            {
+                tokens.push_back(temp);
+            }
+
+            // creating a pointer array and storing
+            char *args[tokens.size() + 1];
+            for (int i = 0; i < tokens.size(); i++)
+            {
+                args[i] = new char[tokens[i].length()];
+                strcpy(args[i], tokens[i].c_str());
+            }
+            args[tokens.size()] = NULL;
+            int status = execl("/bin", args[0]);
+            cout << status << endl;
         }
         else
         {
@@ -73,3 +94,6 @@ int main()
     }
 END:;
 }
+
+// Perform argumneted operation through text files
+// use a binary file to execute given commands directly
