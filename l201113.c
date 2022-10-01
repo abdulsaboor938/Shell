@@ -13,6 +13,7 @@ Assignment 1
 #include <unistd.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <limits.h>
 
 // main function
 int main()
@@ -22,9 +23,12 @@ int main()
     // loop to take input till exit
     while (1)
     {
-        char instr[500];                                 // character array to take input
-        printf("(base) 20L-1113@Assignment-1 Shell $ "); // shell prompt
-        fgets(instr, sizeof(instr), stdin);              // capturing input string
+        // getting path information
+        char t_path[PATH_MAX];
+        getcwd(t_path, sizeof(t_path));     // getting terminal path
+        char instr[500];                    // character array to take input
+        printf("%s (main) $ ", t_path);     // shell prompt
+        fgets(instr, sizeof(instr), stdin); // capturing input string
 
         if (strcmp(instr, "exit") == 10) // if input is exit command
         {
@@ -53,6 +57,18 @@ int main()
         if (pid == 0)
         {
             // in child process
+
+            // for executing cd command
+            if ((strcmp(tokens[0], "cd") == 0) && (strcmp(tokens[1], "\0")) != 0)
+            {
+                if (strcmp(tokens[1], "~") == 0)
+                    chdir(getenv("HOME"));
+                else if (strcmp(tokens[1], ".."))
+                    chdir("..");
+                exit(0);
+            }
+
+            // executing other commands
             if (execvp(tokens[0], tokens) == -1) // executing command from tokenized array
                 printf("zsh: command not found: %s \n", tokens[0]);
             exit(0); // exiting properly
