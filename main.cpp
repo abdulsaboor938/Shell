@@ -32,7 +32,7 @@ int main()
     while (true)
     {
         string instr, temp;                             // this is a string to take input from user
-        cout << "(base) 20L-1113@Assignment1 Shell % "; // prompt for terminal input
+        cout << "20L-1113@Assignment1 Shell (base) $ "; // prompt for terminal input
         getline(cin, instr);                            // getting input from command line
 
         if (instr == "exit") // going to exit if "exit" command given
@@ -83,8 +83,8 @@ int main()
                 strcpy(args[i], tokens[i].c_str());
             }
             args[tokens.size()] = NULL;
-            int status = execl("/bin", args[0]);
-            cout << status << endl;
+            // int status = execl("/bin", args[0]);
+            // cout << status << endl;
         }
         else
         {
