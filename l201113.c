@@ -57,18 +57,6 @@ int main()
         if (pid == 0)
         {
             // in child process
-
-            // for executing cd command
-            if ((strcmp(tokens[0], "cd") == 0) && (strcmp(tokens[1], "\0")) != 0)
-            {
-                if (strcmp(tokens[1], "~") == 0)
-                    chdir(getenv("HOME"));
-                else if (strcmp(tokens[1], ".."))
-                    chdir("..");
-                exit(0);
-            }
-
-            // executing other commands
             if (execvp(tokens[0], tokens) == -1) // executing command from tokenized array
                 printf("zsh: command not found: %s \n", tokens[0]);
             exit(0); // exiting properly

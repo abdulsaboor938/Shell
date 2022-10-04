@@ -1,13 +1,22 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <stdio.h>
+#include <sys/wait.h>
+#include <limits.h>
 
 int main()
 {
-    char *temp[] = {"echo", "hello"};
-    char *temp1 = {"world"};
-    *(temp + 2) = temp1;
-    *(temp + 3) = NULL;
-    execvp(temp[0], temp);
+    char t_path[PATH_MAX];
+    getcwd(t_path, sizeof(t_path));
+    printf("%s\n", t_path);
+
+    chdir("..");
+    getcwd(t_path, sizeof(t_path));
+    printf("%s\n", t_path);
+
+    chdir(getenv("HOME"));
+    getcwd(t_path, sizeof(t_path));
+    printf("%s\n", t_path);
     return 0;
 }
