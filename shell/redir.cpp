@@ -76,6 +76,9 @@ char **split_args(string command)
     return args;
 }
 
+// ---------------------------------------------
+// fucntions to run commands
+
 // recursive function to execute commands in a pipe
 void execute_pipe(vector<string> commands, int index, int in, int out)
 {
@@ -157,11 +160,9 @@ void execute_command(string command)
     }
 }
 
-int main()
+// function to check and execute redirection
+void check_redirection(string command)
 {
-    // sample redirection command
-    string command = "ls -l > out.txt";
-
     // checking if command contains redirection
     if (command.find('>') != string::npos)
     {
@@ -193,5 +194,44 @@ int main()
         // executing command
         execute_command(command);
     }
-    return 0;
+}
+
+int main()
+{
+    // variables to store standard input and output
+    int stdin = dup(0);
+    int stdout = dup(1);
+
+    // taking input while not exit
+    while (true)
+    {
+        // setting file descriptor back to standard
+        dup2(stdin, 0);
+        dup2(stdout, 1);
+
+        // printing prompt
+        cout << "shell> ";
+        // taking input
+        string command;
+        getline(cin, command);
+        // checking if exit
+        if (command == "exit")
+        {
+            break;
+        }
+        // creating a child process
+        int pid = fork();
+        if (pid == 0)
+        {
+            // child process
+            // checking and executing redirection
+            check_redirection(command);
+        }
+        else
+        {
+            // parent process
+            // waiting for child process to finish
+            wait(NULL);
+        }
+    }
 }

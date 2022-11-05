@@ -157,14 +157,58 @@ void execute_command(string command)
     }
 }
 
+// function to check and execute redirection
+void check_redirection(string command)
+{
+    // checking if command contains redirection
+    if (command.find('>') != string::npos)
+    {
+        // splitting command into command and file name
+        string cmd = command.substr(0, command.find('>'));
+        string file = command.substr(command.find('>') + 1);
+
+        // creating child process
+        int pid = fork();
+        if (pid == 0)
+        {
+            // child process
+            // opening file
+            int fd = open(trim(file).c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            // redirecting output to file
+            dup2(fd, 1);
+            // executing command
+            execute_command(cmd);
+        }
+        else
+        {
+            // parent process
+            // waiting for child process to finish
+            wait(NULL);
+        }
+    }
+    else
+    {
+        // executing command
+        execute_command(command);
+    }
+}
+
 int main()
 {
     // just maintains history, implements some checks and passes the command to execute_command
+
+    // variables to store standard input and output
+    int stdin = dup(0);
+    int stdout = dup(1);
 
     system("clear");
     string command;
     while (true)
     {
+        // setting standard input and output
+        dup2(stdin, 0);
+        dup2(stdout, 1);
+
         // vector to store history of last 10 commands
         static vector<string> history;
 
@@ -175,6 +219,12 @@ int main()
         getcwd(cwd, sizeof(cwd));
         cout << cwd << " $ ";
         getline(cin, command);
+
+        // if command is empty
+        if (command == "")
+        {
+            continue;
+        }
 
         // implementing exit command
         if (strcmp(command.c_str(), "exit") == 0)
@@ -214,6 +264,16 @@ int main()
             }
         }
 
+        // printing vector from most recent to least recent if history command is entered
+        if (strcmp(command.c_str(), "history") == 0)
+        {
+            for (int i = history.size() - 1; i >= 0; i--)
+            {
+                cout << i + 1 << " : " << history[i] << endl;
+            }
+            continue;
+        }
+
         if (flag == 0)
         {
             // implementing history
@@ -225,7 +285,7 @@ int main()
         }
 
         // executing command
-        execute_command(command);
+        check_redirection(command);
     }
 END:;
     return 0;
