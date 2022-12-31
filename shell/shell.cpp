@@ -19,13 +19,13 @@ string trim(string str)
     int end = str.length() - 1;
     while (str[start] == ' ')
     {
-        start++;
+        start++; // increment start till it is not a space
     }
     while (str[end] == ' ')
     {
-        end--;
+        end--; // decrement end till it is not a space
     }
-    return str.substr(start, end - start + 1);
+    return str.substr(start, end - start + 1); // return the trimmed string
 }
 
 // function to split string into commads based on |
@@ -35,18 +35,18 @@ vector<string> split(string command)
     string cmd;
     for (char c : command)
     {
-        if (c == '|')
+        if (c == '|') // if pipe found
         {
-            commands.push_back(trim(cmd));
-            cmd = "";
+            commands.push_back(trim(cmd)); // pushing stirng to vector
+            cmd = "";                      // reseting cmd
         }
         else
         {
-            cmd += c;
+            cmd += c; // adding character to cmd
         }
     }
-    commands.push_back(trim(cmd));
-    return commands;
+    commands.push_back(trim(cmd)); // pushing last command to vector
+    return commands;               // returning vector
 }
 
 // function to split command into arguments into a dynamic char array
@@ -59,16 +59,17 @@ char **split_args(string command)
     {
         if (c == ' ')
         {
-            args[i] = new char[arg.length() + 1];
-            strcpy(args[i], arg.c_str());
+            args[i] = new char[arg.length() + 1]; // allocating memory for argument
+            strcpy(args[i], arg.c_str());         // copying argument to char array
             i++;
             arg = "";
         }
         else
         {
-            arg += c;
+            arg += c; // adding character to argument
         }
     }
+    // adding last argument
     args[i] = new char[arg.length() + 1];
     strcpy(args[i], arg.c_str());
     i++;
@@ -101,7 +102,7 @@ void execute_pipe(vector<string> commands, int index, int in, int out)
             dup2(in, 0);
             close(in);
         }
-        // if not last command
+        // if last command
         if (out != 1)
         {
             // redirecting output
@@ -145,7 +146,7 @@ void execute_command(string command)
     // implementing cd command
     if (commands[0].substr(0, 2) == "cd")
     {
-        chdir(commands[0].substr(3).c_str());
+        chdir(commands[0].substr(3).c_str()); // changing directory by path from 3rd character
 
         // executing remaining commands
         execute_pipe(commands, 1, 0, 1);
